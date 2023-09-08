@@ -63,3 +63,31 @@ func (fs *Feeds) FromDB(dbFeeds []database.Feed) *Feeds {
 	}
 	return fs
 }
+
+type FeedFollow struct {
+	ID        uuid.UUID `json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	UserID    uuid.UUID `json:"userId"`
+	FeedID    uuid.UUID `json:"feedId"`
+}
+
+func (ff *FeedFollow) FromDB(dbFeedFollow database.FeedFollow) *FeedFollow {
+	ff.ID = dbFeedFollow.ID
+	ff.CreatedAt = dbFeedFollow.CreatedAt
+	ff.UpdatedAt = dbFeedFollow.UpdatedAt
+	ff.UserID = dbFeedFollow.FeedID
+	ff.UserID = dbFeedFollow.UserID
+	return ff
+}
+
+type FeedFollows []FeedFollow
+
+func (ffs *FeedFollows) FromDB(dbFeedFollows []database.FeedFollow) *FeedFollows {
+	for _, dbFeedFollow := range dbFeedFollows {
+		ff := FeedFollow{}
+		ff.FromDB(dbFeedFollow)
+		*ffs = append(*ffs, ff)
+	}
+	return ffs
+}
