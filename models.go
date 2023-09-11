@@ -91,3 +91,38 @@ func (ffs *FeedFollows) FromDB(dbFeedFollows []database.FeedFollow) *FeedFollows
 	}
 	return ffs
 }
+
+type Post struct {
+	ID          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	PublishedAt time.Time `json:"publishedAt"`
+	Url         string    `json:"url"`
+	FeedID      uuid.UUID `json:"feedId"`
+}
+
+func (p *Post) FromDB(dbPost database.Post) *Post {
+	p.ID = dbPost.ID
+	p.CreatedAt = dbPost.CreatedAt
+	p.UpdatedAt = dbPost.UpdatedAt
+	p.Title = dbPost.Title
+	p.Description = dbPost.Description.String
+	p.PublishedAt = dbPost.PublishedAt
+	p.Url = dbPost.Url
+	p.FeedID = dbPost.FeedID
+	return p
+}
+
+type Posts []Post
+
+func (ps *Posts) FromDB(dbPosts []database.Post) *Posts {
+	for _, dbPost := range dbPosts {
+		p := Post{}
+		p.FromDB(dbPost)
+
+		*ps = append(*ps, p)
+	}
+	return ps
+}
